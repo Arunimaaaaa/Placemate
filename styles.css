@@ -1,3 +1,4 @@
+/* General Styles */
 body {
   font-family: 'Poppins', sans-serif;
   margin: 0;
@@ -12,74 +13,71 @@ body {
 header {
   background: linear-gradient(135deg, #007BFF, #00BFFF);
   color: white;
-  padding: 60px 20px;
-  text-align: center;
+  padding: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  position: relative;
-  overflow: hidden;
-}
-
-header::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(255, 255, 255, 0.1);
-  z-index: 1;
 }
 
 .header-content {
-  position: relative;
-  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-header h1 {
+.header-left h1 {
   margin: 0;
-  font-size: 3.5rem;
+  font-size: 2.5rem;
   font-weight: 600;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-  animation: fadeIn 1.5s ease-in-out;
 }
 
-header p {
-  margin: 10px 0 0;
-  font-size: 1.5rem;
+.header-left p {
+  margin: 5px 0 0;
+  font-size: 1.2rem;
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-  animation: fadeIn 2s ease-in-out;
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.header-right nav a {
+  color: white;
+  text-decoration: none;
+  margin: 0 15px;
+  font-size: 1.1rem;
+  transition: color 0.3s;
+}
+
+.header-right nav a:hover {
+  color: #ffdd57;
 }
 
 main {
   padding: 40px 20px;
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
   flex: 1;
 }
 
-#venue-list {
-  display: grid;
-  gap: 30px;
+#venue-list h2 {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.venue-container {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding-bottom: 20px;
 }
 
 .venue-card {
   background-color: white;
   border: 1px solid #ddd;
   border-radius: 15px;
-  padding: 30px;
+  padding: 20px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   transition: transform 0.2s, box-shadow 0.2s;
+  min-width: 300px;
 }
 
 .venue-card:hover {
@@ -89,23 +87,23 @@ main {
 
 .venue-card h3 {
   margin-top: 0;
-  font-size: 2rem;
+  font-size: 1.5rem;
   color: #007BFF;
 }
 
 .venue-card p {
   margin: 10px 0;
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 
 .venue-card button {
   background-color: #007BFF;
   color: white;
   border: none;
-  padding: 15px 25px;
+  padding: 10px 20px;
   border-radius: 10px;
   cursor: pointer;
-  font-size: 1.2rem;
+  font-size: 1rem;
   transition: background-color 0.3s;
 }
 
@@ -113,11 +111,13 @@ main {
   background-color: #0056b3;
 }
 
-#booking-form {
+#booking-form, #login-form, #signup-form {
   background-color: white;
   padding: 30px;
   border-radius: 15px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: 0 auto;
 }
 
 form {
@@ -135,7 +135,7 @@ input {
   padding: 15px;
   border: 1px solid #ddd;
   border-radius: 10px;
-  font-size: 1.2rem;
+  font-size: 1rem;
   transition: border-color 0.3s;
 }
 
@@ -165,6 +165,8 @@ button[type="submit"]:hover {
   border-radius: 15px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
+  max-width: 500px;
+  margin: 0 auto;
 }
 
 #confirmation h2 {
@@ -199,4 +201,45 @@ footer {
   position: relative;
   margin-top: auto;
   font-size: 1.2rem;
+}
+
+.footer-links {
+  margin-top: 10px;
+}
+
+.footer-links a {
+  color: white;
+  text-decoration: none;
+  margin: 0 10px;
+  font-size: 1rem;
+}
+
+.footer-links a:hover {
+  text-decoration: underline;
+}
+
+#loading {
+  text-align: center;
+  font-size: 1.5rem;
+  margin: 20px 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .header-right {
+    margin-top: 10px;
+  }
+
+  .venue-container {
+    flex-direction: column;
+  }
+
+  .venue-card {
+    min-width: auto;
+  }
 }
