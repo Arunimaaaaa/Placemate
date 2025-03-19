@@ -5,54 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Placemate - Venue Booking</title>
   <link rel="stylesheet" href="styles.css">
-  <!-- Add Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
   <header>
     <div class="header-content">
-      <h1>Placemate</h1>
-      <p>Your perfect venue booking platform</p>
+      <div class="header-left">
+        <h1>Placemate</h1>
+        <p>Your perfect venue booking platform</p>
+      </div>
+      <nav class="header-right">
+        <a href="index.html">Home</a>
+        <a href="login.html">Login</a>
+        <a href="signup.html">Signup</a>
+      </nav>
     </div>
   </header>
 
   <main>
     <section id="venue-list">
       <h2>Available Venues</h2>
-      <div class="venue-card" data-venue-id="1">
-        <h3>Grand Ballroom</h3>
-        <p>Capacity: 200 people</p>
-        <p>Price: $1000/day</p>
-        <p>📍 Location: Downtown</p>
-        <button onclick="bookVenue(1)">Book Now</button>
-      </div>
-      <div class="venue-card" data-venue-id="2">
-        <h3>Cozy Lounge</h3>
-        <p>Capacity: 50 people</p>
-        <p>Price: $300/day</p>
-        <p>📍 Location: Midtown</p>
-        <button onclick="bookVenue(2)">Book Now</button>
-      </div>
-      <div class="venue-card" data-venue-id="3">
-        <h3>Rooftop Garden</h3>
-        <p>Capacity: 100 people</p>
-        <p>Price: $700/day</p>
-        <p>📍 Location: Uptown</p>
-        <button onclick="bookVenue(3)">Book Now</button>
-      </div>
-      <div class="venue-card" data-venue-id="4">
-        <h3>Conference Hall</h3>
-        <p>Capacity: 150 people</p>
-        <p>Price: $800/day</p>
-        <p>📍 Location: Business District</p>
-        <button onclick="bookVenue(4)">Book Now</button>
-      </div>
-      <div class="venue-card" data-venue-id="5">
-        <h3>Beachside Pavilion</h3>
-        <p>Capacity: 120 people</p>
-        <p>Price: $900/day</p>
-        <p>📍 Location: Seaside</p>
-        <button onclick="bookVenue(5)">Book Now</button>
+      <div id="loading">Loading...</div>
+      <div class="venue-container">
+        <!-- Venue cards will be dynamically inserted here -->
       </div>
     </section>
 
@@ -84,6 +59,11 @@
 
   <footer>
     <p>&copy; 2025 Placemate. All rights reserved.</p>
+    <div class="footer-links">
+      <a href="#">About Us</a>
+      <a href="#">Contact</a>
+      <a href="#">Privacy Policy</a>
+    </div>
   </footer>
 
   <script src="script.js"></script>
