@@ -3,69 +3,105 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Placemate - Venue Booking</title>
+  <title>Placemate - Home</title>
   <link rel="stylesheet" href="styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
   <header>
-    <div class="header-content">
-      <div class="header-left">
-        <h1>Placemate</h1>
-        <p>Your perfect venue booking platform</p>
-      </div>
-      <nav class="header-right">
-        <a href="index.html">Home</a>
-        <a href="login.html">Login</a>
-        <a href="signup.html">Signup</a>
-      </nav>
-    </div>
+    <nav>
+      <div class="logo">Placemate</div>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="venues.html">Classrooms</a></li>
+        <li><a href="login.html">Login</a></li>
+        <li><a href="signup.html" class="btn">Sign Up</a></li>
+      </ul>
+    </nav>
   </header>
 
-  <main>
-    <section id="venue-list">
-      <h2>Available Venues</h2>
-      <div id="loading">Loading...</div>
-      <div class="venue-container">
-        <!-- Venue cards will be dynamically inserted here -->
+  <section class="hero">
+    <div class="hero-text">
+      <h1>Welcome to Vidyalankar Institute of Technology</h1>
+      <p>Book classrooms for your events and activities with ease.</p>
+      <a href="venues.html" class="btn">Explore Classrooms</a>
+    </div>
+  </section>
+
+  <section class="features">
+    <h2>Why Choose Placemate?</h2>
+    <div class="feature-cards">
+      <div class="card">
+        <h3>Easy Booking</h3>
+        <p>Book classrooms in just a few clicks.</p>
       </div>
-    </section>
+      <div class="card">
+        <h3>24/7 Support</h3>
+        <p>We're here to help you anytime.</p>
+      </div>
+    </div>
+  </section>
 
-    <section id="booking-form" style="display: none;">
-      <h2>Book Your Venue</h2>
-      <form id="booking-details">
-        <label for="name">Your Name:</label>
-        <input type="text" id="name" required placeholder="Enter your name">
-
-        <label for="date">Booking Date:</label>
-        <input type="date" id="date" required>
-
-        <label for="start-time">Start Time:</label>
-        <input type="time" id="start-time" required>
-
-        <label for="end-time">End Time:</label>
-        <input type="time" id="end-time" required>
-
-        <button type="submit">Confirm Booking</button>
-      </form>
-    </section>
-
-    <section id="confirmation" style="display: none;">
-      <h2>Booking Confirmed!</h2>
-      <p id="confirmation-details"></p>
-      <button onclick="resetPage()">Book Another Venue</button>
-    </section>
-  </main>
+  <!-- Booked Venues Section -->
+  <section class="booked-venues">
+    <h2>Booked Venues</h2>
+    <div class="booked-cards" id="booked-cards">
+      <!-- Booked venues will be dynamically added here -->
+    </div>
+  </section>
 
   <footer>
     <p>&copy; 2025 Placemate. All rights reserved.</p>
-    <div class="footer-links">
-      <a href="#">About Us</a>
-      <a href="#">Contact</a>
-      <a href="#">Privacy Policy</a>
-    </div>
+    <p>Vidyalankar Institute of Technology, Mumbai</p>
   </footer>
 
-  <script src="script.js"></script>
+  <script>
+    // Sample data for booked venues (can be loaded from localStorage)
+    const bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+
+    // Function to render booked venues
+    function renderBookedVenues() {
+      const bookedCards = document.getElementById("booked-cards");
+      bookedCards.innerHTML = "";
+
+      if (bookings.length === 0) {
+        bookedCards.innerHTML = "<p>No venues have been booked yet.</p>";
+        return;
+      }
+
+      bookings.forEach((booking) => {
+        const card = document.createElement("div");
+        card.className = "venue-card";
+        card.innerHTML = `
+          <h3>${booking.venue}</h3>
+          <p><strong>Booked by:</strong> ${booking.name}</p>
+          <p><strong>Date:</strong> ${booking.date}</p>
+          <p><strong>Time:</strong> ${booking.startTime} - ${booking.endTime}</p>
+          <button class="btn cancel-btn" data-venue="${booking.venue}">Cancel Booking</button>
+        `;
+        bookedCards.appendChild(card);
+      });
+
+      // Add event listeners to cancel buttons
+      document.querySelectorAll(".cancel-btn").forEach((button) => {
+        button.addEventListener("click", () => cancelBooking(button.dataset.venue));
+      });
+    }
+
+    // Function to cancel a booking
+    function cancelBooking(venueId) {
+      let updatedBookings = bookings.filter((booking) => booking.venue !== venueId);
+      localStorage.setItem("bookings", JSON.stringify(updatedBookings));
+      renderBookedVenues();
+    }
+
+    // Initialize the page
+    function init() {
+      renderBookedVenues();
+    }
+
+    // Run the initialization function when the page loads
+    document.addEventListener("DOMContentLoaded", init);
+  </script>
 </body>
 </html>
