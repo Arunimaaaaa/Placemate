@@ -1,115 +1,93 @@
-let selectedVenueId = null;
-
+// Sample data for available venues
 const venues = [
-  {
-    id: 1,
-    name: "Grand Ballroom",
-    capacity: "200 people",
-    price: "$1000/day",
-    location: "Downtown",
-  },
-  {
-    id: 2,
-    name: "Cozy Lounge",
-    capacity: "50 people",
-    price: "$300/day",
-    location: "Midtown",
-  },
-  {
-    id: 3,
-    name: "Rooftop Garden",
-    capacity: "100 people",
-    price: "$700/day",
-    location: "Uptown",
-  },
-  {
-    id: 4,
-    name: "Conference Hall",
-    capacity: "150 people",
-    price: "$800/day",
-    location: "Business District",
-  },
-  {
-    id: 5,
-    name: "Beachside Pavilion",
-    capacity: "120 people",
-    price: "$900/day",
-    location: "Seaside",
-  },
+  { id: "M413", name: "M413", capacity: 50, facilities: "Projector, Whiteboard", booked: false },
+  { id: "B105", name: "B105", capacity: 30, facilities: "Projector, Air Conditioning", booked: false },
+  { id: "M101", name: "M101", capacity: 100, facilities: "Projector, Sound System", booked: false },
+  { id: "Auditorium", name: "Auditorium", capacity: 300, facilities: "Stage, Sound System, Projector", booked: false },
 ];
 
+// Function to render available venues
 function renderVenues() {
-  const venueContainer = document.querySelector(".venue-container");
-  const loading = document.getElementById("loading");
+  const venueCards = document.querySelector(".venue-cards");
+  venueCards.innerHTML = "";
 
-  loading.style.display = "block"; // Show loading
-  venueContainer.innerHTML = ""; // Clear existing content
-
-  setTimeout(() => {
-    venueContainer.innerHTML = venues
-      .map(
-        (venue) => `
-        <div class="venue-card" data-venue-id="${venue.id}">
-          <h3>${venue.name}</h3>
-          <p>Capacity: ${venue.capacity}</p>
-          <p>Price: ${venue.price}</p>
-          <p>📍 Location: ${venue.location}</p>
-          <button onclick="bookVenue(${venue.id})">Book Now</button>
-        </div>
-      `
-      )
-      .join("");
-    loading.style.display = "none"; // Hide loading
-  }, 1000); // Simulate a delay
+  venues.forEach((venue) => {
+    if (!venue.booked) {
+      const card = document.createElement("div");
+      card.className = "venue-card";
+      card.innerHTML = `
+        <h3>${venue.name}</h3>
+        <p><strong>Capacity:</strong> ${venue.capacity} students</p>
+        <p><strong>Facilities:</strong> ${venue.facilities}</p>
+        <a href="booking.html?venue=${venue.id}" class="btn">Book Now</a>
+      `;
+      venueCards.appendChild(card);
+    }
+  });
 }
 
-function bookVenue(venueId) {
-  selectedVenueId = venueId;
-  document.getElementById("venue-list").style.display = "none";
-  document.getElementById("booking-form").style.display = "block";
-}
+// Function to render booked venues
+function renderBookedVenues() {
+  const bookedCards = document.getElementById("booked-cards");
+  bookedCards.innerHTML = "";
 
-document.getElementById("booking-details").addEventListener("submit", function (e) {
-  e.preventDefault();
+  const bookedVenues = venues.filter((venue) => venue.booked);
 
-  const name = document.getElementById("name").value;
-  const date = document.getElementById("date").value;
-  const startTime = document.getElementById("start-time").value;
-  const endTime = document.getElementById("end-time").value;
-
-  // Basic validation
-  if (!name || !date || !startTime || !endTime) {
-    alert("Please fill out all fields.");
+  if (bookedVenues.length === 0) {
+    bookedCards.innerHTML = "<p>No venues have been booked yet.</p>";
     return;
   }
 
-  // Check if end time is after start time
-  if (startTime >= endTime) {
-    alert("End time must be after start time.");
-    return;
-  }
+  bookedVenues.forEach((venue) => {
+    const card = document.createElement("div");
+    card.className = "venue-card";
+    card.innerHTML = `
+      <h3>${venue.name}</h3>
+      <p><strong>Capacity:</strong> ${venue.capacity} students</p>
+      <p><strong>Facilities:</strong> ${venue.facilities}</p>
+      <button class="btn cancel-btn" data-id="${venue.id}">Cancel Booking</button>
+    `;
+    bookedCards.appendChild(card);
+  });
 
-  const confirmationDetails = `
-    Venue ID: ${selectedVenueId}<br>
-    Name: ${name}<br>
-    Date: ${date}<br>
-    Time: ${startTime} - ${endTime}
-  `;
-
-  document.getElementById("confirmation-details").innerHTML = confirmationDetails;
-  document.getElementById("booking-form").style.display = "none";
-  document.getElementById("confirmation").style.display = "block";
-});
-
-function resetPage() {
-  selectedVenueId = null;
-  document.getElementById("name").value = "";
-  document.getElementById("date").value = "";
-  document.getElementById("start-time").value = "";
-  document.getElementById("end-time").value = "";
-  document.getElementById("venue-list").style.display = "block";
-  document.getElementById("confirmation").style.display = "none";
+  // Add event listeners to cancel buttons
+  document.querySelectorAll(".cancel-btn").forEach((button) => {
+    button.addEventListener("click", () => cancelBooking(button.dataset.id));
+  });
 }
 
-// Render venues when the page loads
-window.onload = renderVenues;
+// Function to cancel a booking
+function cancelBooking(venueId) {
+  const venue = venues.find((v) => v.id === venueId);
+  if (venue) {
+    venue.booked = false;
+    saveToLocalStorage();
+    renderVenues();
+    renderBookedVenues();
+  }
+}
+
+// Save booked venues to local storage
+function saveToLocalStorage() {
+  localStorage.setItem("bookedVenues", JSON.stringify(venues));
+}
+
+// Load booked venues from local storage
+function loadFromLocalStorage() {
+  const storedVenues = JSON.parse(localStorage.getItem("bookedVenues"));
+  if (storedVenues) {
+    venues.forEach((venue, index) => {
+      venue.booked = storedVenues[index].booked;
+    });
+  }
+}
+
+// Initialize the page
+function init() {
+  loadFromLocalStorage();
+  renderVenues();
+  renderBookedVenues();
+}
+
+// Run the initialization function when the page loads
+document.addEventListener("DOMContentLoaded", init);
