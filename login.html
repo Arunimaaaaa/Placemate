@@ -9,42 +9,37 @@
 </head>
 <body>
   <header>
-    <div class="header-content">
-      <div class="header-left">
-        <h1>Placemate</h1>
-        <p>Your perfect venue booking platform</p>
-      </div>
-      <nav class="header-right">
-        <a href="index.html">Home</a>
-        <a href="login.html">Login</a>
-        <a href="signup.html">Signup</a>
-      </nav>
-    </div>
+    <nav>
+      <div class="logo">Placemate</div>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="venues.html">Classrooms</a></li>
+        <li><a href="signup.html" class="btn">Sign Up</a></li>
+      </ul>
+    </nav>
   </header>
 
-  <main>
-    <section id="login-form">
-      <h2>Login</h2>
-      <form id="login-details">
+  <section class="auth-form">
+    <h2>Login</h2>
+    <form id="login-form">
+      <div class="form-group">
         <label for="email">Email:</label>
         <input type="email" id="email" required placeholder="Enter your email">
+      </div>
 
+      <div class="form-group">
         <label for="password">Password:</label>
         <input type="password" id="password" required placeholder="Enter your password">
+      </div>
 
-        <button type="submit">Login</button>
-      </form>
-      <p>Don't have an account? <a href="signup.html">Sign up here</a>.</p>
-    </section>
-  </main>
+      <button type="submit" class="btn">Login</button>
+    </form>
+    <p>Don't have an account? <a href="signup.html">Sign up here</a>.</p>
+  </section>
 
   <footer>
     <p>&copy; 2025 Placemate. All rights reserved.</p>
-    <div class="footer-links">
-      <a href="#">About Us</a>
-      <a href="#">Contact</a>
-      <a href="#">Privacy Policy</a>
-    </div>
+    <p>Vidyalankar Institute of Technology, Mumbai</p>
   </footer>
 
   <script src="script.js"></script>
