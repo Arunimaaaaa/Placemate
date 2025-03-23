@@ -3,21 +3,18 @@ body {
   font-family: 'Poppins', sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f4f4f9;
+  background-color: #F5F7FA;
   color: #333;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
 }
 
 header {
-  background: linear-gradient(135deg, #007BFF, #00BFFF);
+  background: linear-gradient(135deg, #4A90E2, #50E3C2);
   color: white;
   padding: 20px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
-.header-content {
+nav {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -25,59 +22,85 @@ header {
   margin: 0 auto;
 }
 
-.header-left h1 {
-  margin: 0;
-  font-size: 2.5rem;
-  font-weight: 600;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+nav .logo {
+  font-size: 1.5rem;
+  font-weight: bold;
 }
 
-.header-left p {
-  margin: 5px 0 0;
-  font-size: 1.2rem;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 20px;
 }
 
-.header-right nav a {
+nav ul li a {
   color: white;
   text-decoration: none;
-  margin: 0 15px;
-  font-size: 1.1rem;
+  font-weight: 600;
   transition: color 0.3s;
 }
 
-.header-right nav a:hover {
-  color: #ffdd57;
+nav ul li a:hover {
+  color: #FF6F61;
 }
 
-main {
-  padding: 40px 20px;
+/* Venue List Styles */
+.venue-list {
+  padding: 50px 20px;
   max-width: 1200px;
   margin: 0 auto;
-  flex: 1;
 }
 
-#venue-list h2 {
-  text-align: center;
-  font-size: 2rem;
-  margin-bottom: 20px;
-}
-
-.venue-container {
+.filters {
   display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.filters input, .filters select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  flex: 1;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.filters input:focus, .filters select:focus {
+  border-color: #4A90E2;
+  box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+  outline: none;
+}
+
+.filters button {
+  padding: 10px 20px;
+  background-color: #FF6F61;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.filters button:hover {
+  background-color: #E65A50;
+  transform: scale(1.05);
+}
+
+.venue-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
-  overflow-x: auto;
-  padding-bottom: 20px;
 }
 
 .venue-card {
   background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 15px;
   padding: 20px;
+  border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s, box-shadow 0.2s;
-  min-width: 300px;
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
 .venue-card:hover {
@@ -86,9 +109,9 @@ main {
 }
 
 .venue-card h3 {
-  margin-top: 0;
+  margin: 0;
   font-size: 1.5rem;
-  color: #007BFF;
+  color: #4A90E2;
 }
 
 .venue-card p {
@@ -96,150 +119,328 @@ main {
   font-size: 1rem;
 }
 
-.venue-card button {
-  background-color: #007BFF;
+.venue-card .btn {
+  background-color: #FF6F61;
   color: white;
-  border: none;
   padding: 10px 20px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 1rem;
-  transition: background-color 0.3s;
+  border-radius: 5px;
+  text-decoration: none;
+  display: inline-block;
+  margin-top: 10px;
+  transition: background-color 0.3s, transform 0.3s;
+  border: none; /* Remove border */
+  outline: none; /* Remove outline */
 }
 
-.venue-card button:hover {
-  background-color: #0056b3;
+.venue-card .btn:hover {
+  background-color: #E65A50;
+  transform: scale(1.05);
 }
 
-#booking-form, #login-form, #signup-form {
-  background-color: white;
-  padding: 30px;
-  border-radius: 15px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  max-width: 500px;
+/* Booked Venues Section */
+.booked-venues {
+  padding: 50px 20px;
+  max-width: 1200px;
   margin: 0 auto;
 }
 
-form {
-  display: flex;
-  flex-direction: column;
+.booked-venues h2 {
+  font-size: 2rem;
+  color: #4A90E2;
+  margin-bottom: 20px;
+}
+
+.booked-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 20px;
 }
 
-label {
-  font-weight: bold;
-  font-size: 1.2rem;
-}
-
-input {
-  padding: 15px;
+.booked-cards .venue-card {
+  background-color: #f8f9fa;
   border: 1px solid #ddd;
+  padding: 20px;
   border-radius: 10px;
-  font-size: 1rem;
-  transition: border-color 0.3s;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
 }
 
-input:focus {
-  border-color: #007BFF;
+.booked-cards .venue-card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.booked-cards .venue-card h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #ff6f61;
+}
+
+.booked-cards .venue-card p {
+  margin: 10px 0;
+  font-size: 1rem;
+}
+
+.booked-cards .cancel-btn {
+  background-color: #6c757d;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  display: inline-block;
+  margin-top: 10px;
+  transition: background-color 0.3s, transform 0.3s;
+  border: none;
   outline: none;
 }
 
-button[type="submit"] {
-  background-color: #28a745;
-  color: white;
-  border: none;
-  padding: 15px 25px;
-  border-radius: 10px;
-  cursor: pointer;
-  font-size: 1.2rem;
-  transition: background-color 0.3s;
+.booked-cards .cancel-btn:hover {
+  background-color: #5a6268;
+  transform: scale(1.05);
 }
 
-button[type="submit"]:hover {
-  background-color: #218838;
-}
-
-#confirmation {
+/* Booking Form Styles */
+.booking-form {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 20px;
   background-color: white;
-  padding: 30px;
-  border-radius: 15px;
+  border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  text-align: center;
-  max-width: 500px;
-  margin: 0 auto;
 }
 
-#confirmation h2 {
+.booking-form h2 {
+  margin: 0 0 20px;
   font-size: 2rem;
+  color: #4A90E2;
+  text-align: center;
 }
 
-#confirmation p {
-  font-size: 1.2rem;
+.form-group {
+  margin-bottom: 20px;
 }
 
-#confirmation button {
-  background-color: #007BFF;
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #333;
+}
+
+.form-group input, .form-group select, .form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  border-color: #4A90E2;
+  box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+  outline: none;
+}
+
+.form-group textarea {
+  resize: vertical;
+}
+
+.booking-form button {
+  width: 100%;
+  padding: 10px;
+  background-color: #FF6F61;
   color: white;
   border: none;
-  padding: 15px 25px;
-  border-radius: 10px;
+  border-radius: 5px;
+  font-size: 1rem;
   cursor: pointer;
-  font-size: 1.2rem;
-  transition: background-color 0.3s;
+  margin-top: 20px;
+  transition: background-color 0.3s, transform 0.3s;
 }
 
-#confirmation button:hover {
-  background-color: #0056b3;
+.booking-form button:hover {
+  background-color: #E65A50;
+  transform: scale(1.05);
 }
 
 footer {
   text-align: center;
   padding: 20px;
-  background-color: #007BFF;
+  background-color: #4A90E2;
   color: white;
+}
+
+/* Signup Form Styles */
+.auth-form {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.auth-form h2 {
+  margin: 0 0 20px;
+  font-size: 2rem;
+  color: #4A90E2;
+  text-align: center;
+}
+
+.auth-form label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #333;
+}
+
+.auth-form input {
   width: 100%;
-  position: relative;
-  margin-top: auto;
-  font-size: 1.2rem;
-}
-
-.footer-links {
-  margin-top: 10px;
-}
-
-.footer-links a {
-  color: white;
-  text-decoration: none;
-  margin: 0 10px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
   font-size: 1rem;
+  transition: border-color 0.3s, box-shadow 0.3s;
 }
 
-.footer-links a:hover {
+.auth-form input:focus {
+  border-color: #4A90E2;
+  box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+  outline: none;
+}
+
+.auth-form button {
+  width: 100%;
+  padding: 10px;
+  background-color: #FF6F61;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s, transform 0.3s;
+}
+
+.auth-form button:hover {
+  background-color: #E65A50;
+  transform: scale(1.05);
+}
+
+.auth-form p {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.auth-form a {
+  color: #4A90E2;
+  text-decoration: none;
+}
+
+.auth-form a:hover {
   text-decoration: underline;
 }
 
-#loading {
-  text-align: center;
-  font-size: 1.5rem;
-  margin: 20px 0;
+/* Home Page Styles */
+.hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 50px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-/* Responsive Design */
-@media (max-width: 768px) {
-  .header-content {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+.hero-text h1 {
+  font-size: 3rem;
+  margin: 0;
+  animation: fadeIn 1s ease-in-out;
+}
 
-  .header-right {
-    margin-top: 10px;
-  }
+.hero-text p {
+  font-size: 1.2rem;
+  animation: fadeIn 1.5s ease-in-out;
+}
 
-  .venue-container {
-    flex-direction: column;
-  }
+.hero-text .btn {
+  background-color: #FF6F61;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  text-decoration: none;
+  transition: background-color 0.3s, transform 0.3s;
+  animation: fadeIn 2s ease-in-out;
+}
 
-  .venue-card {
-    min-width: auto;
+.hero-text .btn:hover {
+  background-color: #E65A50;
+  transform: scale(1.05);
+}
+
+.hero-image img {
+  max-width: 100%;
+  height: auto;
+  animation: slideIn 1s ease-in-out;
+}
+
+.features {
+  padding: 50px 20px;
+  text-align: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.feature-cards {
+  display: flex;
+  justify-content: space-around;
+  gap: 20px;
+}
+
+.card {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+  animation: fadeIn 1s ease-in-out;
+}
+
+.card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+.card h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #4A90E2;
+}
+
+.card p {
+  margin: 10px 0;
+  font-size: 1rem;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
   }
 }
