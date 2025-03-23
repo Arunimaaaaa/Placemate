@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Placemate - Book Venue</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* Additional CSS for the booking form */
+    .booking-form {
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .booking-form h2 {
+      margin: 0 0 20px;
+      font-size: 2rem;
+      color: #4A90E2;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 1rem;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .form-group input:focus {
+      border-color: #4A90E2;
+      box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+      outline: none;
+    }
+
+    .booking-form button {
+      width: 100%;
+      padding: 10px;
+      background-color: #FF6F61;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+
+    .booking-form button:hover {
+      background-color: #E65A50;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <div class="logo">Placemate</div>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="venues.html">Classrooms</a></li>
+        <li><a href="login.html">Login</a></li>
+        <li><a href="signup.html" class="btn">Sign Up</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="booking-form">
+    <h2>Book Venue</h2>
+    <form id="bookingForm">
+      <div class="form-group">
+        <label for="venue">Venue</label>
+        <input type="text" id="venue" name="venue" readonly>
+      </div>
+      <div class="form-group">
+        <label for="name">Your Name</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      <div class="form-group">
+        <label for="date">Booking Date</label>
+        <input type="date" id="date" name="date" required>
+      </div>
+      <div class="form-group">
+        <label for="start-time">Start Time</label>
+        <input type="time" id="start-time" name="start-time" required>
+      </div>
+      <div class="form-group">
+        <label for="end-time">End Time</label>
+        <input type="time" id="end-time" name="end-time" required>
+      </div>
+      <button type="submit" class="btn">Confirm Booking</button>
+    </form>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Placemate. All rights reserved.</p>
+    <p>Vidyalankar Institute of Technology, Mumbai</p>
+  </footer>
+
+  <script>
+    // Get the venue ID from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const venueId = urlParams.get("venue");
+
+    // Set the venue name in the form
+    if (venueId) {
+      document.getElementById("venue").value = venueId;
+    }
+
+    // Handle form submission
+    document.getElementById("bookingForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      // Get form values
+      const venue = document.getElementById("venue").value;
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const date = document.getElementById("date").value;
+      const startTime = document.getElementById("start-time").value;
+      const endTime = document.getElementById("end-time").value;
+
+      // Validate end time is after start time
+      if (startTime >= endTime) {
+        alert("End time must be after start time.");
+        return;
+      }
+
+      // Save booking details to local storage
+      const booking = {
+        venue,
+        name,
+        email,
+        date,
+        startTime,
+        endTime,
+      };
+      saveBooking(booking);
+
+      // Redirect to venues page
+      alert("Booking confirmed!");
+      window.location.href = "venues.html";
+    });
+
+    // Function to save booking to local storage
+    function saveBooking(booking) {
+      let bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+      bookings.push(booking);
+      localStorage.setItem("bookings", JSON.stringify(bookings));
+    }
+  </script>
+</body>
+</html>
