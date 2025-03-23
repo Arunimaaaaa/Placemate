@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Placemate - Classrooms</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header>
+    <nav>
+      <div class="logo">Placemate</div>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="venues.html">Classrooms</a></li>
+        <li><a href="login.html">Login</a></li>
+        <li><a href="signup.html" class="btn">Sign Up</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="venue-list">
+    <h2>Available Classrooms</h2>
+    <div class="filters">
+      <input type="text" placeholder="Search by room number">
+      <select id="block">
+        <option value="">Select Block</option>
+        <option value="A">A Block</option>
+        <option value="B">B Block</option>
+        <option value="C">C Block</option>
+        <option value="D">D Block</option>
+        <option value="E">E Block</option>
+        <option value="F">F Block</option>
+        <option value="M">M Block</option>
+      </select>
+      <select id="floor">
+        <option value="">Select Floor</option>
+        <option value="1">1st Floor</option>
+        <option value="2">2nd Floor</option>
+        <option value="3">3rd Floor</option>
+      </select>
+      <button>Search</button>
+    </div>
+    <div class="venue-cards">
+      <!-- Classrooms will be dynamically added here -->
+    </div>
+  </section>
+
+  <!-- Booked Venues Section -->
+  <section class="booked-venues">
+    <h2>Booked Venues</h2>
+    <div class="booked-cards" id="booked-cards">
+      <!-- Booked venues will be dynamically added here -->
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Placemate. All rights reserved.</p>
+    <p>Vidyalankar Institute of Technology, Mumbai</p>
+  </footer>
+
+  <script>
+    // Sample data for available venues
+    const venues = [
+      { id: "M413", name: "M413", capacity: 50, facilities: "Projector, Whiteboard", booked: false },
+      { id: "B105", name: "B105", capacity: 30, facilities: "Projector, Air Conditioning", booked: false },
+      { id: "M101", name: "M101", capacity: 100, facilities: "Projector, Sound System", booked: false },
+      { id: "Auditorium", name: "Auditorium", capacity: 300, facilities: "Stage, Sound System, Projector", booked: false },
+    ];
+
+    // Function to render available venues
+    function renderVenues() {
+      const venueCards = document.querySelector(".venue-cards");
+      venueCards.innerHTML = "";
+
+      venues.forEach((venue) => {
+        if (!venue.booked) {
+          const card = document.createElement("div");
+          card.className = "venue-card";
+          card.innerHTML = `
+            <h3>${venue.name}</h3>
+            <p><strong>Capacity:</strong> ${venue.capacity} students</p>
+            <p><strong>Facilities:</strong> ${venue.facilities}</p>
+            <a href="booking.html?venue=${venue.id}" class="btn">Book Now</a>
+          `;
+          venueCards.appendChild(card);
+        }
+      });
+    }
+
+    // Function to render booked venues
+    function renderBookedVenues() {
+      const bookedCards = document.getElementById("booked-cards");
+      bookedCards.innerHTML = "";
+
+      const bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+
+      if (bookings.length === 0) {
+        bookedCards.innerHTML = "<p>No venues have been booked yet.</p>";
+        return;
+      }
+
+      bookings.forEach((booking) => {
+        const card = document.createElement("div");
+        card.className = "venue-card";
+        card.innerHTML = `
+          <h3>${booking.venue}</h3>
+          <p><strong>Booked by:</strong> ${booking.name}</p>
+          <p><strong>Date:</strong> ${booking.date}</p>
+          <p><strong>Time:</strong> ${booking.startTime} - ${booking.endTime}</p>
+          <button class="btn cancel-btn" data-venue="${booking.venue}">Cancel Booking</button>
+        `;
+        bookedCards.appendChild(card);
+      });
+
+      // Add event listeners to cancel buttons
+      document.querySelectorAll(".cancel-btn").forEach((button) => {
+        button.addEventListener("click", () => cancelBooking(button.dataset.venue));
+      });
+    }
+
+    // Function to cancel a booking
+    function cancelBooking(venueId) {
+      let bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+      bookings = bookings.filter((booking) => booking.venue !== venueId);
+      localStorage.setItem("bookings", JSON.stringify(bookings));
+      renderBookedVenues();
+    }
+
+    // Initialize the page
+    function init() {
+      renderVenues();
+      renderBookedVenues();
+    }
+
+    // Run the initialization function when the page loads
+    document.addEventListener("DOMContentLoaded", init);
+  </script>
+</body>
+</html>
