@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Placemate - Classroom Booking</title>
+  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    .booking-form {
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 30px;
+      background-color: white;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .booking-form h2 {
+      margin: 0 0 20px;
+      font-size: 2rem;
+      color: #4A90E2;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+
+    .form-group input:focus {
+      border-color: #4A90E2;
+      outline: none;
+    }
+
+    .booking-form button {
+      width: 100%;
+      padding: 12px;
+      background-color: #FF6F61;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background-color 0.3s;
+    }
+
+    .booking-form button:hover {
+      background-color: #E65A50;
+    }
+
+    #confirmation-message {
+      display: none;
+      margin-top: 30px;
+      padding: 20px;
+      background-color: #e8f5e9;
+      border-radius: 8px;
+      border-left: 4px solid #2e7d32;
+    }
+
+    #confirmation-message h3 {
+      color: #2e7d32;
+      margin-top: 0;
+    }
+
+    #confirmation-message p {
+      margin-bottom: 8px;
+    }
+
+    #confirmation-message .booking-details {
+      background-color: white;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 15px;
+    }
+
+    .back-btn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #4A90E2;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: 500;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <div class="logo">Placemate</div>
+      <ul id="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="venues.html">Classrooms</a></li>
+        <li><a href="equipment.html">Equipment</a></li>
+        <li id="profile-link" style="display: none;"><a href="profile.html">Profile</a></li>
+        <li id="admin-link" style="display: none;"><a href="admin.html">Admin Panel</a></li>
+        <li id="login-link"><a href="login.html">Login</a></li>
+        <li id="signup-link"><a href="signup.html" class="btn">Sign Up</a></li>
+        <li id="logout-link" style="display: none;"><a href="#" onclick="logout()" class="btn">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="booking-form">
+    <h2>Classroom Booking</h2>
+    <form id="classroomBookingForm">
+      <div class="form-group">
+        <label for="classroom">Classroom</label>
+        <input type="text" id="classroom" name="classroom" readonly>
+      </div>
+      <div class="form-group">
+        <label for="name">Your Name</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+      <div class="form-group">
+        <label for="date">Booking Date</label>
+        <input type="date" id="date" name="date" required>
+      </div>
+      <div class="form-group">
+        <label for="start-time">Start Time</label>
+        <input type="time" id="start-time" name="start-time" required>
+      </div>
+      <div class="form-group">
+        <label for="end-time">End Time</label>
+        <input type="time" id="end-time" name="end-time" required>
+      </div>
+      <button type="submit" class="btn">Submit Booking Request</button>
+    </form>
+    <div id="confirmation-message">
+      <h3>Booking Request Submitted!</h3>
+      <p>Your classroom booking request has been sent to the admin for approval.</p>
+      <div class="booking-details">
+        <p><strong>Classroom:</strong> <span id="confirm-classroom"></span></p>
+        <p><strong>Date:</strong> <span id="confirm-date"></span></p>
+        <p><strong>Time:</strong> <span id="confirm-time"></span></p>
+      </div>
+      <p>You'll receive a confirmation email once your request is approved.</p>
+      <a href="venues.html" class="back-btn">Back to Classrooms</a>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Placemate. All rights reserved.</p>
+    <p>Vidyalankar Institute of Technology, Mumbai</p>
+  </footer>
+
+  <script>
+    // Immediately check login status before anything else loads
+    (function() {
+      const loggedInUser  = JSON.parse(localStorage.getItem("loggedInUser"));
+      if (!loggedInUser  || !loggedInUser.email) {
+        const classroomId = new URLSearchParams(window.location.search).get("venue");
+        const redirectUrl = `booking.html?venue=${classroomId}`;
+        window.location.href = `login.html?redirect=${encodeURIComponent(redirectUrl)}`;
+        return;
+      }
+      initializeClassroomBookingForm();
+    })();
+
+    function initializeClassroomBookingForm() {
+      const loggedInUser  = JSON.parse(localStorage.getItem("loggedInUser"));
+      document.getElementById("name").value = loggedInUser.name || "";
+      document.getElementById("email").value = loggedInUser.email || "";
+
+      const urlParams = new URLSearchParams(window.location.search);
+      const classroomId = urlParams.get("venue");
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById("date").min = today;
+      document.getElementById("date").value = today;
+
+      // Prefill classroom name from venues list
+      const venues = [
+        { id: "A101", name: "A101" },
+        { id: "A102", name: "A102" },
+        { id: "A201", name: "A201" },
+        { id: "A202", name: "A202" },
+        { id: "B101", name: "B101" },
+        { id: "B102", name: "B102" },
+        { id: "B105", name: "B105" },
+        { id: "B201", name: "B201" },
+        { id: "B202", name: "B202" },
+        { id: "B301", name: "B301" },
+        { id: "B302", name: "B302" },
+        { id: "B-Seminar", name: "B Block Seminar Hall" },
+        { id: "C101", name: "C101" },
+        { id: "C102", name: "C102" },
+        { id: "C201", name: "C201" },
+        { id: "C202", name: "C202" },
+        { id: "C301", name: "C301" },
+        { id: "C302", name: "C302" },
+        { id: "D101", name: "D101" },
+        { id: "D102", name: "D102" },
+        { id: "D201", name: "D201" },
+        { id: "D202", name: "D202" },
+        { id: "D301", name: "D301" },
+        { id: "D302", name: "D302" },
+        { id: "D-Seminar", name: "D Block Seminar Hall" },
+        { id: "M101", name: "M101" },
+        { id: "M102", name: "M102" },
+        { id: "M201", name: "M201" },
+        { id: "M202", name: "M202" },
+        { id: "M301", name: "M301" },
+        { id: "M302", name: "M302" },
+        { id: "M401", name: "M401" },
+        { id: "M402", name: "M402" },
+        { id: "M413", name: "M413" },
+        { id: "Conference Room", name: "Conference Room" },
+        { id: "Computer Lab 1", name: "Computer Lab 1" },
+        { id: "Computer Lab 2", name: "Computer Lab 2" },
+        { id: "L001", name: "Lab 1" },
+        { id: "L002", name: "Lab 2" },
+        { id: "L003", name: "Lab 3" },
+        { id: "L004", name: "Lab 4" },
+        { id: "L005", name: "Lab 5" },
+        { id: "L006", name: "Lab 6" },
+        { id: "L007", name: "Lab 7" },
+        { id: "L008", name: "Lab 8" },
+        { id: "L009", name: "Lab 9" },
+        { id: "Auditorium", name: "Auditorium" },
+        { id: "Seminar Hall", name: "Seminar Hall" },
+        { id: "DEN", name: "DEN Playing Room" },
+        { id: "Recording Room", name: "Recording Room" },
+        { id: "LCR", name: "Ladies Common Room" }
+      ];
+
+      if (classroomId) {
+        const classroom = venues.find(v => v.id === classroomId);
+        if (classroom) {
+          document.getElementById("classroom").value = classroom.name;
+        }
+      }
+
+      // Handle form submission
+      document.getElementById("classroomBookingForm").addEventListener("submit", handleBooking);
+    }
+
+    function handleBooking(event) {
+      event.preventDefault(); // Prevent default form submission
+
+      const classroomName = document.getElementById("classroom").value;
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const date = document.getElementById("date").value;
+      const startTime = document.getElementById("start-time").value;
+      const endTime = document.getElementById("end-time").value;
+
+      // Validation checks
+      if (!name || !email || !date || !startTime || !endTime) {
+        alert("Please fill all fields.");
+        return;
+      }
+
+      if (startTime >= endTime) {
+        alert("End time must be after start time.");
+        return;
+      }
+
+      const today = new Date().toISOString().split('T')[0];
+      if (date < today) {
+        alert("Booking date cannot be in the past.");
+        return;
+      }
+
+      const startTimeInMinutes = parseInt(startTime.split(":")[0]) * 60 + parseInt(startTime.split(":")[1]);
+      const endTimeInMinutes = parseInt(endTime.split(":")[0]) * 60 + parseInt(endTime.split(":")[1]);
+      const duration = (endTimeInMinutes - startTimeInMinutes) / 60;
+
+      if (duration > 6) {
+        alert("Booking duration cannot exceed 6 hours.");
+        return;
+      }
+
+      // Check for existing bookings for this classroom
+      const bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+      const existingBookings = bookings.filter(b => 
+        b.venue === classroomName && 
+        b.date === date &&
+        ((startTime >= b.startTime && startTime < b.endTime) ||
+         (endTime > b.startTime && endTime <= b.endTime) ||
+         (startTime <= b.startTime && endTime >= b.endTime))
+      );
+
+      if (existingBookings.length > 0) {
+        alert("This classroom is already booked for the selected time slot.");
+        return;
+      }
+
+      // Generate a unique booking ID
+      const bookingId = Date.now().toString();
+
+      // Create new booking
+      const newBooking = {
+        id: bookingId,
+        venue: classroomName,
+        name: name,
+        email: email,
+        date: date,
+        startTime: startTime,
+        endTime: endTime,
+        status: "pending" // Status for admin approval
+      };
+
+      // Add to bookings and save
+      bookings.push(newBooking);
+      localStorage.setItem("bookings", JSON.stringify(bookings));
+
+      // Show confirmation
+      document.getElementById("classroomBookingForm").style.display = "none";
+      
+      // Fill confirmation details
+      document.getElementById("confirm-classroom").textContent = classroomName;
+      document.getElementById("confirm-date").textContent = date;
+      document.getElementById("confirm-time").textContent = `${startTime} - ${endTime}`;
+      
+      // Show confirmation message
+      document.getElementById("confirmation-message").style.display = "block";
+    }
+
+    function logout() {
+      localStorage.removeItem("loggedInUser");
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>

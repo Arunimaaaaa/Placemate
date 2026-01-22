@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel - Placemate</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    .admin-table-actions button {
+      margin-right: 10px;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      border: none;
+      transition: background-color 0.3s;
+    }
+    .approve-btn {
+      background-color: #4CAF50;
+      color: white;
+    }
+    .reject-btn {
+      background-color: #E74C3C;
+      color: white;
+    }
+    .approve-btn:hover {
+      background-color: #45a049;
+    }
+    .reject-btn:hover {
+      background-color: #c0392b;
+    }
+    .status-approved {
+      color: green;
+      font-weight: bold;
+    }
+    .status-rejected {
+      color: red;
+      font-weight: bold;
+    }
+    .status-pending {
+      color: orange;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <div class="logo">Placemate Admin</div>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="admin.html">Admin Panel</a></li>
+        <li><a href="#" onclick="logout()" class="btn">Logout</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="booked-venues">
+    <h2 style="text-align:center;">Pending Venue Bookings</h2>
+    <div class="bookings-table-container">
+      <table class="bookings-table">
+        <thead>
+          <tr>
+            <th>Venue</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="booking-table-body">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="booked-equipment">
+    <h2 style="text-align:center;">Pending Equipment Bookings</h2>
+    <div class="bookings-table-container">
+      <table class="bookings-table">
+        <thead>
+          <tr>
+            <th>Equipment</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="equipment-booking-table-body">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Placemate. All rights reserved.</p>
+    <p>Vidyalankar Institute of Technology, Mumbai</p>
+  </footer>
+
+  <script>
+    const loggedInUser = JSON.parse(localStorage.getItem("loggedInUser"));
+    if (!loggedInUser || loggedInUser.email !== "admin@placemate.com") {
+      alert("Access denied. Admin only.");
+      window.location.href = "login.html";
+    }
+
+    const bookings = JSON.parse(localStorage.getItem("bookings")) || [];
+    const tableBody = document.getElementById("booking-table-body");
+
+    function renderBookings() {
+      tableBody.innerHTML = "";
+
+      bookings.forEach((b, index) => {
+        const status = b.status || "pending";
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${b.venue}</td>
+          <td>${b.name}</td>
+          <td>${b.email}</td>
+          <td>${b.date}</td>
+          <td>${b.startTime} - ${b.endTime}</td>
+          <td class="status-${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</td>
+          <td class="admin-table-actions">
+            ${status === "pending" ? `
+              <button class="approve-btn" onclick="updateStatus(${index}, 'approved', 'venue')">Approve</button>
+              <button class="reject-btn" onclick="updateStatus(${index}, 'rejected', 'venue')">Reject</button>
+            ` : ""}
+            <button class="reject-btn" onclick="removeBooking(${index}, 'venue')">Remove</button>
+          </td>
+        `;
+        tableBody.appendChild(row);
+      });
+    }
+
+    function updateStatus(index, status) {
+      bookings[index].status = status;
+      localStorage.setItem("bookings", JSON.stringify(bookings));
+      renderBookings();
+    }
+
+    function logout() {
+      localStorage.removeItem("loggedInUser");
+      window.location.href = "login.html";
+    }
+
+    renderBookings();
+    // Add this to your existing script
+  const equipmentBookings = JSON.parse(localStorage.getItem("equipmentBookings")) || [];
+
+  // Add equipment array definition here
+  const equipment = [
+    { id: "proj1", name: "Projector 1", type: "visual", quantity: 5, available: 5, description: "HD Projector with HDMI input" },
+    { id: "proj2", name: "Projector 2", type: "visual", quantity: 3, available: 3, description: "4K Projector with multiple inputs" },
+    { id: "mic1", name: "Wireless Mic Set", type: "audio", quantity: 8, available: 8, description: "Set of 2 wireless microphones with receiver" },
+    { id: "mic2", name: "Wired Mic", type: "audio", quantity: 15, available: 15, description: "Standard wired microphone" },
+    { id: "speaker1", name: "PA Speaker", type: "audio", quantity: 6, available: 6, description: "Portable PA speaker with stand" },
+    { id: "speaker2", name: "Subwoofer", type: "audio", quantity: 2, available: 2, description: "Powerful subwoofer for events" },
+    { id: "screen1", name: "Projection Screen", type: "visual", quantity: 4, available: 4, description: "120\" motorized projection screen" },
+    { id: "laptop1", name: "Presentation Laptop", type: "other", quantity: 5, available: 5, description: "Laptop with presentation software" },
+    { id: "cam1", name: "Video Camera", type: "visual", quantity: 3, available: 3, description: "4K video camera with tripod" },
+    { id: "light1", name: "Stage Lights", type: "other", quantity: 2, available: 2, description: "Set of 4 LED stage lights" },
+  ];
+
+  function renderEquipmentBookings() {
+    const tableBody = document.getElementById("equipment-booking-table-body");
+    tableBody.innerHTML = "";
+
+    equipmentBookings.forEach((b, index) => {
+      const status = b.status || "pending";
+      const row = document.createElement("tr");
+
+      const equipmentItem = equipment.find(e => e.id === b.equipmentId);
+      const equipmentName = equipmentItem ? equipmentItem.name : b.equipmentId;
+
+      row.innerHTML = `
+        <td>${equipmentName}</td>
+        <td>${b.name}</td>
+        <td>${b.email}</td>
+        <td>${b.date}</td>
+        <td>${b.startTime} - ${b.endTime}</td>
+        <td class="status-${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</td>
+        <td class="admin-table-actions">
+          ${status === "pending" ? `
+            <button class="approve-btn" onclick="updateStatus(${index}, 'approved', 'equipment')">Approve</button>
+            <button class="reject-btn" onclick="updateStatus(${index}, 'rejected', 'equipment')">Reject</button>
+          ` : ""}
+          <button class="reject-btn" onclick="removeBooking(${index}, 'equipment')">Remove</button>
+        </td>
+      `;
+      tableBody.appendChild(row);
+    });
+  }
+
+function updateStatus(index, status, type) {
+  if (type === 'venue') {
+    bookings[index].status = status;
+    localStorage.setItem("bookings", JSON.stringify(bookings));
+    renderBookings();
+  } else {
+    equipmentBookings[index].status = status;
+    localStorage.setItem("equipmentBookings", JSON.stringify(equipmentBookings));
+    renderEquipmentBookings();
+  }
+}
+
+function removeBooking(index, type) {
+  if (type === 'venue') {
+    bookings.splice(index, 1);
+    localStorage.setItem("bookings", JSON.stringify(bookings));
+    renderBookings();
+  } else {
+    equipmentBookings.splice(index, 1);
+    localStorage.setItem("equipmentBookings", JSON.stringify(equipmentBookings));
+    renderEquipmentBookings();
+  }
+}
+
+// Call this instead of renderBookings()
+renderEquipmentBookings();
+  </script>
+</body>
+</html>

@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Placemate - Login</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    /* Fix input text box sizes */
+    .auth-form input[type="email"],
+    .auth-form input[type="password"] {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+      transition: border-color 0.3s ease;
+    }
+    .auth-form input[type="email"]:focus,
+    .auth-form input[type="password"]:focus {
+      border-color: #4a90e2;
+      outline: none;
+      box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <nav>
+      <div class="logo">Placemate</div>
+      <ul id="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="venues.html">Classrooms</a></li>
+        <li><a href="equipment.html">Equipment</a></li>
+        <li id="profile-link" style="display: none;"><a href="profile.html">Profile</a></li>
+        <li id="login-link"><a href="login.html">Login</a></li>
+        <li id="signup-link"><a href="signup.html" class="btn">Sign Up</a></li>
+        <li id="logout-link" style="display: none;"><a href="#" onclick="logout()">Logout</a></li>
+        <li id="admin-link" style="display: none;"><a href="admin.html">Admin Panel</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section class="auth-form">
+    <h2>Login</h2>
+    <div id="login-message" style="display:none; margin-bottom: 15px; padding: 10px; background-color: #e6f0ff; border: 1px solid #4a90e2; border-radius: 6px; color: #2a4d8f; font-weight: 600;">
+      Login to book in venues and equipment
+    </div>
+    <form id="login-form">
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" required placeholder="Enter your email" />
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" id="password" required placeholder="Enter your password" />
+      </div>
+
+      <button type="submit" class="btn">Login</button>
+    </form>
+    <p>Don't have an account? <a href="signup.html">Sign up here</a>.</p>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Placemate. All rights reserved.</p>
+    <p>Vidyalankar Institute of Technology, Mumbai</p>
+  </footer>
+
+  <script>
+    // Check if user is already logged in
+    window.addEventListener('DOMContentLoaded', function () {
+      updateNavbar();
+    });
+
+    // Function to update navbar based on login status
+    function updateNavbar() {
+      const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+      const loginLink = document.getElementById('login-link');
+      const signupLink = document.getElementById('signup-link');
+      const logoutLink = document.getElementById('logout-link');
+      const adminLink = document.getElementById('admin-link');
+      const profileLink = document.getElementById('profile-link'); // ✅
+
+      if (loggedInUser) {
+        // User is logged in
+        loginLink.style.display = 'none';
+        signupLink.style.display = 'none';
+        logoutLink.style.display = 'inline-block';
+        profileLink.style.display = 'inline-block'; // ✅
+
+        if (loggedInUser.email === 'admin@placemate.com') {
+          adminLink.style.display = 'inline-block';
+        } else {
+          adminLink.style.display = 'none';
+        }
+      } else {
+        // User is not logged in
+        loginLink.style.display = 'inline-block';
+        signupLink.style.display = 'inline-block';
+        logoutLink.style.display = 'none';
+        adminLink.style.display = 'none';
+        profileLink.style.display = 'none'; // ✅
+      }
+    }
+
+    // Function to handle logout
+    async function logout() {
+      const loggedInUser = JSON.parse(localStorage.getItem('loggedInUser'));
+      if (loggedInUser && loggedInUser.email) {
+        try {
+          const response = await fetch('http://localhost:3002/api/logout', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email: loggedInUser.email }),
+          });
+          if (response.ok) {
+            console.log('Logout time recorded successfully.');
+          } else {
+            console.error('Failed to record logout time.');
+          }
+        } catch (error) {
+          console.error('Error calling logout API:', error);
+        }
+      }
+      localStorage.removeItem('loggedInUser');
+      // Remove user interface elements related to logged-in state
+      document.getElementById('logout-link').style.display = 'none';
+      document.getElementById('profile-link').style.display = 'none';
+      document.getElementById('login-link').style.display = 'inline-block';
+      document.getElementById('signup-link').style.display = 'inline-block';
+      alert('Logged out successfully!');
+      window.location.href = 'index.html';
+    }
+
+    // Handle login form submission
+    document.getElementById('login-form').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+
+      try {
+        const response = await fetch('http://localhost:3002/api/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email, password }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          localStorage.setItem(
+            'loggedInUser',
+            JSON.stringify({
+              name: data.name,
+              email: data.email,
+            })
+          );
+
+          alert('Login successful!');
+
+          const urlParams = new URLSearchParams(window.location.search);
+          const redirectUrl = urlParams.get('redirect');
+
+          if (data.email === 'admin@placemate.com') {
+            window.location.href = 'admin.html';
+          } else if (redirectUrl) {
+            window.location.href = decodeURIComponent(redirectUrl);
+          } else {
+            window.location.href = 'index.html';
+          }
+        } else {
+          alert(data.message || 'Invalid email or password.');
+        }
+      } catch (error) {
+        alert('Error connecting to server.');
+        console.error('Login error:', error);
+      }
+    });
+  </script>
+</body>
+</html>
