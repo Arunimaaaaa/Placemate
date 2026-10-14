@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
@@ -16,31 +17,39 @@ const path = require('path');
 // Serve static frontend files from parent directory
 app.use(express.static(path.join(__dirname, '..')));
 
-// PostgreSQL pool setup - adjust connection details as needed
+// PostgreSQL connection settings come from backend/.env (see .env.example)
 const pool = new Pool({
-  user: 'postgres',  // Update with your PostgreSQL username
-  host: 'localhost',
-  database: 'Placemate',
-  password: 'root',  // Updated with your PostgreSQL password
-  port: 5432,
+  user: process.env.PGUSER || 'postgres',
+  host: process.env.PGHOST || 'localhost',
+  database: process.env.PGDATABASE || 'Placemate',
+  password: process.env.PGPASSWORD,
+  port: Number(process.env.PGPORT || 5432),
 });
 
-// Create users table if not exists
+// Create the tables the app needs if they don't exist yet
 const createUsersTable = async () => {
-  const query = `
+  await pool.query(`
     CREATE TABLE IF NOT EXISTS users (
       id SERIAL PRIMARY KEY,
       name VARCHAR(100) NOT NULL,
       email VARCHAR(100) UNIQUE NOT NULL,
       password VARCHAR(255) NOT NULL
     );
-  `;
-  await pool.query(query);
+  `);
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS user_sessions (
+      id SERIAL PRIMARY KEY,
+      user_id INTEGER REFERENCES users(id),
+      name VARCHAR(100),
+      email VARCHAR(100),
+      login_time TIMESTAMP,
+      logout_time TIMESTAMP
+    );
+  `);
 };
 
 createUsersTable().catch(err => console.error('Error creating users table:', err));
 
-require('dotenv').config();
 
 // Setup nodemailer transporter - replace with your email credentials
 const transporter = nodemailer.createTransport({
@@ -108,7 +117,7 @@ app.post('/api/login', async (req, res) => {
 
     // Send login notification email
     const mailOptions = {
-      from: 'your-email@gmail.com', // Replace with your email
+      from: process.env.EMAIL_USER,
       to: user.email,
       subject: 'Welcome to Placemate',
       text: `Hello ${user.name},\n\nYou are now a part of Placemate. Welcome aboard!\n\nIf this wasn't you, please contact support immediately.`
